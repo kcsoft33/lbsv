@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LabSave collector</title>
+<link rel="stylesheet" href="./options.css">
+</head>
+<body>
+<main>
+  <h1>Lab<span>Save</span> collector</h1>
+  <p class="sub">Streams this browser profile's open tabs to your own LabSave hub. Private / incognito windows are never collected. Nothing goes anywhere else.</p>
+
+  <section class="card" id="statusCard">
+    <h2>Status</h2>
+    <div class="status"><span class="dot" id="dot"></span><span id="statusText">Loading…</span></div>
+    <dl id="facts"></dl>
+    <div class="acts" id="pairedActs">
+      <button type="button" id="reconnect">Reconnect</button>
+      <button type="button" id="unpair" class="danger">Unpair</button>
+    </div>
+  </section>
+
+  <form class="card" id="pairForm">
+    <h2>Pair with your hub</h2>
+    <p class="hint">In LabSave, open <b>Devices</b>, add this computer (or pick it) and copy the pairing code. Codes work once and expire after 10 minutes.</p>
+    <label>Hub address<input id="hubUrl" placeholder="https://lbsv.example.net or http://192.168.1.20:11444" required autocomplete="url"></label>
+    <label>Pairing code<input id="code" placeholder="ABCD-EFGH" required autocomplete="off" spellcheck="false"></label>
+    <label>Profile label <small>(how this browser profile is shown, e.g. Work, Personal)</small><input id="profileNew" placeholder="Default" autocomplete="off"></label>
+    <div class="acts"><button class="primary">Pair</button></div>
+  </form>
+
+  <form class="card" id="settingsForm">
+    <h2>Settings</h2>
+    <label>Profile label<input id="profile" placeholder="Default" autocomplete="off"></label>
+    <label class="check"><input type="checkbox" id="includeInternal"> Include browser-internal pages (settings, new tab, extension pages)</label>
+    <p class="hint">Query parameters that look like secrets (token, key, code, session, signature…) and <code>user:pass@</code> are stripped from every URL before it leaves this browser. Domains on the hub's deny-list are counted but not sent.</p>
+    <div class="acts"><button class="primary">Save</button></div>
+  </form>
+
+  <p class="err" id="err"></p>
+</main>
+<script type="module" src="./options.ts"></script>
+</body>
+</html>

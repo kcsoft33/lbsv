@@ -1,0 +1,26 @@
+# LabSave hub.   docker compose up -d   then   docker compose logs hub   for the first-run setup code.
+# Configure via a .env file next to this one (see .env.example). Build from source instead:
+#   docker compose -f compose.yaml -f compose.build.yaml up -d --build
+services:
+  hub:
+    image: ${LBSV_IMAGE:-ghcr.io/kcsoft33/lbsv:latest}
+    container_name: lbsv
+    restart: unless-stopped
+    ports:
+      # Publish only on the interface you choose (LAN or VPN IP). Never 0.0.0.0 on an internet-facing box.
+      - "${LBSV_BIND_IP:-127.0.0.1}:${LBSV_PUBLISH_PORT:-11444}:8080"
+    environment:
+      # Optional: leave empty and claim the hub in the browser with the setup code from the logs.
+      LBSV_ADMIN_PASSPHRASE: ${LBSV_ADMIN_PASSPHRASE:-}
+      LBSV_COOKIE_SECURE: ${LBSV_COOKIE_SECURE:-auto}
+      LBSV_TRUST_PROXY: ${LBSV_TRUST_PROXY:-}
+      LBSV_LOG_LEVEL: ${LBSV_LOG_LEVEL:-info}
+      LBSV_FAVICONS: ${LBSV_FAVICONS:-1}
+      LBSV_PUBLIC_URL: ${LBSV_PUBLIC_URL:-}
+      LBSV_BACKUP_EVERY_HOURS: ${LBSV_BACKUP_EVERY_HOURS:-24}
+      LBSV_BACKUP_KEEP: ${LBSV_BACKUP_KEEP:-14}
+    volumes:
+      - lbsv-data:/data   # database + backups/ (copy backups off this machine now and then)
+
+volumes:
+  lbsv-data:

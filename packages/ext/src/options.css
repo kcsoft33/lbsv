@@ -1,0 +1,35 @@
+:root {
+  --bg: #0f1216; --panel: #161b21; --line: #262e37; --text: #e6e9ee; --muted: #8b96a5; --accent: #7cc4ff;
+  --ok: #4caf50; --warn: #f9a825; --bad: #ef5350;
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: light) {
+  :root { --bg: #f6f7f9; --panel: #fff; --line: #dde2e8; --text: #1b2129; --muted: #5d6876; --accent: #1565c0; color-scheme: light; }
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--text); font: 14px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; }
+main { max-width: 640px; margin: 0 auto; padding: 32px 16px 64px; }
+h1 { font-size: 22px; margin: 0 0 4px; font-weight: 600; }
+h1 span { color: var(--accent); }
+h2 { font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin: 0 0 12px; font-weight: 600; }
+.sub { color: var(--muted); margin: 0 0 20px; }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 16px; margin-bottom: 16px; }
+.hidden { display: none !important; }
+label { display: block; margin-bottom: 12px; font-weight: 500; }
+label small { color: var(--muted); font-weight: 400; }
+label input:not([type=checkbox]) { display: block; width: 100%; margin-top: 4px; padding: 8px 10px; border-radius: 7px; border: 1px solid var(--line); background: var(--bg); color: var(--text); font: inherit; }
+label.check { display: flex; gap: 8px; align-items: center; font-weight: 400; }
+#code { font-family: ui-monospace, Consolas, monospace; letter-spacing: .1em; text-transform: uppercase; }
+.hint { color: var(--muted); font-size: 13px; margin: 0 0 12px; }
+.acts { display: flex; gap: 8px; justify-content: flex-end; }
+button { font: inherit; padding: 7px 14px; border-radius: 7px; border: 1px solid var(--line); background: var(--bg); color: var(--text); cursor: pointer; }
+button.primary { background: var(--accent); border-color: var(--accent); color: #06121e; font-weight: 600; }
+button.danger { color: var(--bad); }
+button:disabled { opacity: .5; cursor: default; }
+.status { display: flex; align-items: center; gap: 8px; font-weight: 500; margin-bottom: 8px; }
+.dot { width: 10px; height: 10px; border-radius: 50%; background: var(--muted); flex: none; }
+.dot.online { background: var(--ok); } .dot.connecting, .dot.offline { background: var(--warn); } .dot.unauthorized { background: var(--bad); }
+dl { display: grid; grid-template-columns: max-content 1fr; gap: 2px 16px; margin: 0 0 12px; font-size: 13px; }
+dt { color: var(--muted); } dd { margin: 0; overflow-wrap: anywhere; }
+.err { color: var(--bad); min-height: 1.5em; }
+code { font-family: ui-monospace, Consolas, monospace; font-size: 12px; }

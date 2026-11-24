@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LabSave — projects, tabs & terminals</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='3' fill='%237cc4ff'/%3E%3Cpath d='M4 5h8M4 8h5M4 11h7' stroke='%2306121e' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E">
+</head>
+<body>
+<div class="app" id="app">
+  <header>
+    <div class="brand" data-act="home">Lab<span>Save</span></div>
+    <div class="search">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input id="q" placeholder="Find a link, host, command, idea…   ( / or Ctrl+K )" autocomplete="off">
+    </div>
+    <form class="capture" id="capture">
+      <input id="capText" placeholder="Capture an idea before it's gone… (Enter)" autocomplete="off">
+      <select id="capTo" title="Where it goes"></select>
+    </form>
+  </header>
+  <div id="banner" class="banner hidden"></div>
+  <aside>
+    <div class="nav">
+      <div class="navitem" data-act="home" id="nav-home">◧ Where I left off</div>
+      <div class="navitem" data-act="inbox" id="nav-inbox">✦ Idea inbox <span class="n" id="inboxN"></span></div>
+      <div class="navitem" data-act="machines" id="nav-machines">⌘ Machines &amp; VMs <span class="n" id="hostN"></span></div>
+      <div class="navitem" data-act="live" id="nav-live">◉ Live tabs <span class="n" id="liveN"></span></div>
+      <div class="navitem" data-act="devices" id="nav-devices">⚙ Devices <span class="n" id="devN"></span></div>
+    </div>
+    <div class="tabs" id="tabs"></div>
+    <div class="plist" id="plist"></div>
+    <form class="newp" id="newp"><input id="newpName" placeholder="New project name"><button class="btn primary sm">Add</button></form>
+    <div class="foot">
+      <a href="/api/export" download data-act="export">Export JSON</a>
+      <span class="dotsep">·</span>
+      <a href="#" data-act="import">Import…</a>
+      <span class="dotsep">·</span>
+      <a href="#" data-act="logout">Log out</a>
+      <input type="file" id="importFile" accept="application/json,.json" class="hidden">
+    </div>
+  </aside>
+  <main id="main"><div class="wrap"><p class="empty">Loading…</p></div></main>
+</div>
+<div id="login" class="login hidden">
+  <form class="login-card" id="loginForm">
+    <div class="brand">Lab<span>Save</span></div>
+    <p class="sub" id="loginMsg">Enter your admin passphrase.</p>
+    <input type="text" id="loginCode" class="hidden" placeholder="Setup code, e.g. ABCD-EFGH-JKLM" autocomplete="off" spellcheck="false">
+    <input type="password" id="loginPass" placeholder="Passphrase" autocomplete="current-password" required>
+    <button class="btn primary" id="loginBtn">Unlock</button>
+    <p class="err" id="loginErr"></p>
+  </form>
+</div>
+<div id="toast" class="toast hidden"></div>
+<script type="module" src="/src/main.ts"></script>
+</body>
+</html>

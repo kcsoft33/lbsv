@@ -1,0 +1,12 @@
+node_modules/
+dist/
+data/
+backups/
+*.db
+*.db-wal
+*.db-shm
+.env
+test-results/
+
+# Mozilla-signed Firefox builds (release assets; not source)
+packages/ext/signed/*.xpi

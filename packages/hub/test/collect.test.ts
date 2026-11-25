@@ -118,7 +118,7 @@ describe("collector sync protocol", () => {
     b.add({ url: "https://a.com/" });
     const c = client(r, token, b);
     await waitFor(() => allTabs(r), (t) => t.length === 1);
-    const seq0 = c.lastAck;
+    const seq0 = await waitFor(() => c.lastAck, (seq) => seq > 0);
 
     const t0 = Date.now();
     const nt = b.add({ url: "https://b.com/", title: "B" });
@@ -126,7 +126,8 @@ describe("collector sync protocol", () => {
     for (let i = 0; i < 20; i++) c.upsertTab({ ...nt, title: `B (${i})` }); // title churn
     await waitFor(() => allTabs(r), (t) => t.some((x) => x.title === "B (19)"));
     expect(Date.now() - t0).toBeLessThan(budget(2000));
-    expect(c.lastAck - seq0).toBe(1); // 21 changes → one delta
+    const ack = await waitFor(() => c.lastAck, (seq) => seq > seq0);
+    expect(ack - seq0).toBe(1); // 21 changes → one delta
 
     c.removeTab("100");
     c.upsertWindow({ id: "1", focused: false });

@@ -103,7 +103,8 @@ describe("send tabs to another browser", () => {
     b.windows = [{ id: "1" }, { id: "7", focused: true }];
     await connect(r, "laptop", "Work", a);
     await connect(r, "desktop", "Home", b);
-    const st = await waitFor(() => live(r), (s) => tabsOf(s, "Work").length === 2 && s.devices.every((d) => d.browsers.every((x) => x.connected)));
+    // both browsers must be registered: `every` over a device with no browsers yet is vacuously true
+    const st = await waitFor(() => live(r), (s) => tabsOf(s, "Work").length === 2 && s.devices.length === 2 && s.devices.every((d) => d.browsers.length === 1 && d.browsers[0]!.connected));
     const target = st.devices.find((d) => d.name === "desktop")!.browsers[0]!.id;
     const sel = tabsOf(st, "Work").map((t) => ({ id: t.id, url: t.url }));
 

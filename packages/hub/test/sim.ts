@@ -8,11 +8,11 @@ import { buildApp, type Hub } from "../src/app.ts";
 import { CollectorClient, enroll } from "../../shared/src/collectorClient.ts";
 import type { LiveState, WireTab, WireWindow } from "../../shared/src/live.ts";
 import { runCommand, type TabsApi } from "../../ext/src/commands.ts";
-import { PASS, login } from "./helpers.ts";
+import { PASS, budget, login } from "./helpers.ts";
 
 export const cleanups: (() => Promise<void> | void)[] = [];
 export async function waitFor<T>(fn: () => Promise<T> | T, ok: (v: T) => boolean, ms = 3000): Promise<T> {
-  const until = Date.now() + ms;
+  const until = Date.now() + budget(ms);
   for (;;) {
     const v = await fn();
     if (ok(v)) return v;

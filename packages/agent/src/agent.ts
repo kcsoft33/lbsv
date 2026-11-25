@@ -107,6 +107,8 @@ export interface AgentOptions {
   log?: (s: string) => void;
   /** Overridable for tests. */
   mux?: () => Promise<{ tmux: TmuxSession[]; panes: Map<string, string>; screens: ScreenSession[] }>;
+  /** Is this shell's process still there? Overridable for tests (the default rejects non-shell pids on Linux). */
+  alive?: (s: ShellState) => boolean;
 }
 
 /** Watches the hook files, polls tmux/screen, and keeps the client's terminal list current. */
@@ -157,7 +159,7 @@ export class Agent {
   }
 
   rescan(): WireTerm[] {
-    const terms = composeTerms(readShells(this.o.stateDir), this.mux.tmux, this.mux.panes, this.mux.screens, this.user);
+    const terms = composeTerms(readShells(this.o.stateDir, this.o.alive),this.mux.tmux, this.mux.panes, this.mux.screens, this.user);
     this.o.client.update(terms);
     return terms;
   }

@@ -9,6 +9,7 @@ import type { CollectorStatus } from "../../shared/src/hubSocket.ts";
 import type { LiveState } from "../../shared/src/live.ts";
 import type { WireTerm } from "../../shared/src/terms.ts";
 import { Agent, AgentClient } from "../../agent/src/agent.ts";
+import { processAlive } from "../../agent/src/shells.ts";
 import { PASS, login } from "./helpers.ts";
 import { call, cleanups, live, start, waitFor, type Running } from "./sim.ts";
 
@@ -122,7 +123,9 @@ describe("offline queue: hub down, terminals change, hub back", () => {
     const statuses: CollectorStatus[] = [];
     const c = client(agentUrl(r1), token, statuses);
     let tmux = [{ name: "work", attached: 1, windows: 1, cwd: "/home/k/git" }];
-    const agent = new Agent({ stateDir, client: c, pollMs: 60_000, debounceMs: 20, mux: async () => ({ tmux, panes: new Map(), screens: [] }) });
+    // On Linux the real liveness check rejects pids whose /proc comm isn't a shell, and this "shell" is node.
+    const alive = (s: { pid: number }) => s.pid === process.pid || processAlive(s.pid);
+    const agent = new Agent({ stateDir, client: c, pollMs: 60_000, debounceMs: 20, alive, mux: async () => ({ tmux, panes: new Map(), screens: [] }) });
     cleanups.push(() => agent.stop());
     await agent.start();
     await waitFor(() => live(r1), (s) => termsOf(s).length === 2);

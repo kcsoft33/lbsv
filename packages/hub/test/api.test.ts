@@ -1,7 +1,7 @@
 import { describe, expect, it, beforeEach, afterEach } from "vitest";
 import WebSocket from "ws";
 import { ulid } from "../../shared/src/ulid.ts";
-import { login, makeHub } from "./helpers.ts";
+import { budget, login, makeHub } from "./helpers.ts";
 import type { Project, State } from "../../shared/src/types.ts";
 
 type H = Awaited<ReturnType<typeof makeHub>>;
@@ -209,7 +209,7 @@ describe("realtime fan-out", () => {
     const t0 = Date.now();
     const id = (await req("POST", "/api/projects", { name: "live" })).json().id;
     await new Promise<void>((res) => { const i = setInterval(() => { if (msgs.length > 1) { clearInterval(i); res(); } }, 5); });
-    expect(Date.now() - t0).toBeLessThan(1000);
+    expect(Date.now() - t0).toBeLessThan(budget(1000));
     expect(msgs[1]).toEqual({ t: "changed", entity: "project", ids: [id] });
     ws.close();
   });

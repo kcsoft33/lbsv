@@ -8,7 +8,7 @@ import { openDb, type DB } from "../src/db.ts";
 import { buildApp, type Hub } from "../src/app.ts";
 import { CollectorClient, enroll, UNAUTHORIZED_RETRY_MS, type CollectorStatus } from "../../shared/src/collectorClient.ts";
 import { CLOSE_BAD_MESSAGE, CLOSE_UNAUTHORIZED, type LiveState, type WireTab, type WireWindow } from "../../shared/src/live.ts";
-import { PASS, login } from "./helpers.ts";
+import { PASS, budget, login } from "./helpers.ts";
 
 interface Running { hub: Hub; port: number; base: string; ws: string; cookie: string }
 const cleanups: (() => Promise<void> | void)[] = [];
@@ -31,7 +31,7 @@ const liveState = (r: Running) => api<LiveState>(r, "GET", "/api/live");
 const allTabs = async (r: Running) => (await liveState(r)).devices.flatMap((d) => d.browsers.flatMap((b) => b.windows.flatMap((w) => w.tabs)));
 
 async function waitFor<T>(fn: () => Promise<T> | T, ok: (v: T) => boolean, ms = 3000): Promise<T> {
-  const until = Date.now() + ms;
+  const until = Date.now() + budget(ms);
   let v: T;
   for (;;) {
     v = await fn();
@@ -125,7 +125,7 @@ describe("collector sync protocol", () => {
     c.upsertTab(nt);
     for (let i = 0; i < 20; i++) c.upsertTab({ ...nt, title: `B (${i})` }); // title churn
     await waitFor(() => allTabs(r), (t) => t.some((x) => x.title === "B (19)"));
-    expect(Date.now() - t0).toBeLessThan(2000);
+    expect(Date.now() - t0).toBeLessThan(budget(2000));
     expect(c.lastAck - seq0).toBe(1); // 21 changes → one delta
 
     c.removeTab("100");

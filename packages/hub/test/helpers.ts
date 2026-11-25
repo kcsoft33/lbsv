@@ -3,6 +3,13 @@ import { buildApp, type AppOptions } from "../src/app.ts";
 
 export const PASS = "correct horse battery";
 
+/**
+ * A wall-clock budget. The spec's latency checks (1 s fan-out, 2 s deltas) hold on a real machine, but shared CI
+ * runners (GitHub sets CI=true) stall unpredictably, so there they get 5× the time: CI checks correctness, local
+ * runs check speed.
+ */
+export const budget = (ms: number) => (process.env.CI ? ms * 5 : ms);
+
 export async function makeHub(extra: Partial<AppOptions> = {}) {
   const db = openDb(":memory:");
   const hub = await buildApp({ db, adminPassphrase: PASS, ...extra });

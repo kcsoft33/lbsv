@@ -93,7 +93,7 @@ for (const ps of ["pwsh", "powershell"]) {
       const out = execFileSync(ps, ["-NoProfile", "-NonInteractive", "-Command",
         `. '${hook}'; Set-Location ([IO.Path]::GetTempPath()); $global:LASTEXITCODE = 7; $null = prompt; "exit=$LASTEXITCODE"; ` +
         `$t = Measure-Command { for ($i = 0; $i -lt ${N}; $i++) { $null = prompt } }; "per=" + ($t.TotalMilliseconds / ${N}); ` +
-        `"loc=" + (Get-Location).ProviderPath; "<<" + [IO.File]::ReadAllText($global:__lbsvFile) + ">>"`,
+        `"edition=" + $PSVersionTable.PSEdition; "loc=" + (Get-Location).ProviderPath; "<<" + [IO.File]::ReadAllText($global:__lbsvFile) + ">>"`,
       ], { env: env(ps), encoding: "utf8", timeout: 60_000 });
       expect(out).toContain("exit=7");
       const per = Number(out.match(/per=([\d.,]+)/)![1].replace(",", "."));
@@ -102,7 +102,10 @@ for (const ps of ["pwsh", "powershell"]) {
       const body = out.match(/<<([\s\S]*)>>/)![1];
       // the temp dir differs per OS (C:\…\Temp, /tmp, macOS /var/folders/…/T): compare with what PowerShell itself reports
       const loc = out.match(/^loc=(.*)$/m)![1]!.trim();
-      expect(parseShellFile(body, 0)).toMatchObject({ shell: ps === "pwsh" ? "pwsh" : "powershell", cwd: loc });
+      // `powershell` can be an alias for Core on macOS/Linux.
+      const edition = out.match(/^edition=(.*)$/m)![1]!.trim();
+      expect(["Core", "Desktop"]).toContain(edition);
+      expect(parseShellFile(body, 0)).toMatchObject({ shell: edition === "Core" ? "pwsh" : "powershell", cwd: loc });
       expect(readdirSync(join(dir, ps))).toEqual([]); // removed on a clean exit
     });
   });
